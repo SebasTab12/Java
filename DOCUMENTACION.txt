@@ -1,0 +1,1355 @@
+﻿================================================================================
+  API REST "EJERCICIOS" CON SPRING BOOT
+  Documentación completa del proyecto
+================================================================================
+
+Fecha de la documentación: 24/11/2026
+Carpeta del proyecto:       C:\Users\Sebastian\Desktop\api_java\ejercicios
+Puerto de la API:           3000
+URL base:                   http://localhost:3000
+
+
+================================================================================
+ÍNDICE
+================================================================================
+
+  0.  Respuesta rápida: ¿sobre qué carpeta se trabajó?
+  1.  Descripción del proyecto
+  2.  Referencia: video y repositorio original
+  3.  Tecnologías y versiones
+  4.  Estructura de la carpeta del proyecto
+  5.  Paso a paso de lo realizado (igual que el video)
+  6.  Código completo de los archivos
+  7.  Datos de los 10 ejercicios
+  8.  Endpoints de la API (detallados)
+  9.  Comportamiento del filtro por músculo
+  10. Pruebas realizadas y resultados
+  11. Cómo ejecutar el proyecto
+  12. Cómo probar la API (navegador, Postman, curl)
+  13. Qué NO se agregó (a propósito)
+  14. Solución de problemas frecuentes
+  15. Comparación con el proyecto del video
+  16. Lista de verificación final
+
+
+================================================================================
+0. RESPUESTA RÁPIDA: ¿SOBRE QUÉ CARPETA SE TRABAJÓ?
+================================================================================
+
+SÍ. Se trabajó sobre TU proyecto existente, no se creó otro proyecto aparte.
+
+La carpeta con TODO el proyecto es:
+
+    C:\Users\Sebastian\Desktop\api_java\ejercicios
+
+Esa carpeta ya existía: era el esqueleto (scaffold) que generaste con Spring
+Initializr / IntelliJ IDEA. Lo que se hizo fue completarla con el mismo patrón
+del video: una clase modelo y un controlador REST.
+
+ARCHIVOS QUE YA EXISTÍAN EN TU CARPETA:
+
+    - pom.xml
+    - mvnw
+    - mvnw.cmd
+    - .mvn\wrapper\maven-wrapper.properties
+    - .gitignore
+    - .gitattributes
+    - HELP.md
+    - src\main\java\com\example\ejercicios\EjerciciosApplication.java
+    - src\main\java\com\example\ejercicios\EjerciciosController.java
+      (existía, pero estaba VACÍA: solo el package y la declaración de la clase)
+    - src\main\resources\application.properties
+    - src\test\java\com\example\ejercicios\EjerciciosApplicationTests.java
+    - La carpeta .idea (configuración de IntelliJ)
+
+ARCHIVOS CREADOS:
+
+    - src\main\java\com\example\ejercicios\Ejercicio.java
+    - README.md
+    - DOCUMENTACION.txt  (este archivo)
+
+ARCHIVOS MODIFICADOS:
+
+    - src\main\java\com\example\ejercicios\EjerciciosController.java
+      (se implementó completo)
+    - src\main\resources\application.properties
+      (se agregó la línea server.port=3000)
+
+ARCHIVOS QUE NO SE TOCARON:
+
+    - pom.xml
+    - mvnw / mvnw.cmd / .mvn\wrapper\maven-wrapper.properties
+    - EjerciciosApplication.java
+    - EjerciciosApplicationTests.java
+    - HELP.md
+    - .gitignore / .gitattributes
+    - La carpeta .idea
+
+IMPORTANTE SOBRE EL ZIP:
+
+    En C:\Users\Sebastian\Desktop\api_java\ hay también un archivo
+    "ejercicios.zip". Ese ZIP es el esqueleto original descargado; NO se
+    modificó. El proyecto con el código nuevo es la CARPETA "ejercicios".
+    El ZIP original ni siquiera contiene la clase Ejercicio.java ni el
+    controlador implementado.
+
+RESUMEN:
+
+    Todo el proyecto funcional está en:
+    C:\Users\Sebastian\Desktop\api_java\ejercicios
+
+    Si quieres entregarlo o subirlo a GitHub, esa es la carpeta que debes usar.
+
+
+================================================================================
+1. DESCRIPCIÓN DEL PROYECTO
+================================================================================
+
+Es una API REST hecha en Java con Spring Boot, sin base de datos. Los datos
+están escritos directamente en el código (en memoria, dentro del controlador),
+igual que en el video de referencia.
+
+La API permite:
+
+    1. Comprobar que el servidor está funcionando.
+    2. Obtener la lista completa de ejercicios.
+    3. Filtrar los ejercicios que trabajan un músculo específico.
+
+Tema elegido: ejercicios de entrenamiento y los músculos que trabajan.
+
+Cada ejercicio tiene esta información:
+
+    - nombre
+    - músculos que trabaja (lista)
+    - equipo o material necesario (lista)
+    - series y repeticiones recomendadas
+    - beneficios (lista)
+    - precauciones (lista)
+    - errores comunes (lista)
+    - recomendaciones (lista)
+
+Son 10 ejercicios cargados manualmente en una lista inmutable (List.of).
+
+
+================================================================================
+2. REFERENCIA: VIDEO Y REPOSITORIO ORIGINAL
+================================================================================
+
+Video de referencia:
+    https://www.youtube.com/watch?v=YqlxKOY2QmY
+
+Repositorio original del video (tema: medicamentos):
+    https://github.com/lausanabria/medicamentos
+
+El proyecto original hace exactamente esto:
+
+    - Una clase modelo llamada Medicamento.
+    - Un controlador con @RestController.
+    - Una lista fija de 10 medicamentos con List.of.
+    - Tres endpoints:
+        GET /                       -> responde "Hola mundo"
+        GET /medicamentos           -> devuelve todos los medicamentos
+        GET /sintoma?sintoma=...    -> filtra por síntoma (recorre la lista
+                                       y usa contains sobre las indicaciones)
+    - application.properties con server.port=3000.
+
+En este proyecto se replicó la misma estructura y la misma lógica, cambiando
+el tema de medicamentos por ejercicios y músculos.
+
+No se agregaron capas adicionales ni funcionalidades que no estuvieran en el
+video.
+
+
+================================================================================
+3. TECNOLOGÍAS Y VERSIONES
+================================================================================
+
+Lenguaje:
+    Java 17 (declarado en pom.xml con <java.version>17</java.version>)
+
+Framework:
+    Spring Boot 4.2.0
+
+Nota sobre la versión:
+    El video usa Spring Boot 3.5.3. Tu proyecto ya venía generado con
+    Spring Boot 4.2.0 en el pom.xml, así que se respetó esa versión. El código
+    de la API es el mismo; los endpoints y las anotaciones funcionan igual.
+
+Dependencias principales (en pom.xml):
+    - spring-boot-starter          (base de Spring Boot)
+    - spring-boot-starter-web      (API REST, Spring MVC, Tomcat embebido)
+    - spring-boot-starter-test     (pruebas con JUnit 5, scope test)
+
+Servidor web:
+    Apache Tomcat embebido (lo incluye spring-boot-starter-web)
+
+Serialización JSON:
+    Jackson (lo incluye spring-boot-starter-web)
+
+Maven:
+    Maven Wrapper 3.10.1
+    (definido en .mvn\wrapper\maven-wrapper.properties)
+    No hace falta tener Maven instalado: se usa mvnw / mvnw.cmd.
+
+JDK utilizado para compilar y probar:
+    OpenJDK 25.0.4.1 (el JBR que trae IntelliJ IDEA 2026.3)
+    La compilación se hace con "release 17", por lo que el bytecode es
+    compatible con Java 17.
+
+Base de datos:
+    Ninguna. Los ejercicios están en memoria dentro del controlador.
+
+Puerto:
+    3000 (configurado en application.properties)
+
+
+================================================================================
+4. ESTRUCTURA DE LA CARPETA DEL PROYECTO
+================================================================================
+
+C:\Users\Sebastian\Desktop\api_java\
+│
+├── ejercicios.zip                    ZIP original (NO modificado)
+│
+└── ejercicios\                       PROYECTO (todo está aquí)
+    │
+    ├── .mvn\wrapper\maven-wrapper.properties
+    ├── .gitattributes
+    ├── .gitignore
+    ├── HELP.md
+    ├── README.md                     Creado
+    ├── DOCUMENTACION.txt             Creado (este archivo)
+    ├── mvnw
+    ├── mvnw.cmd
+    ├── pom.xml
+    │
+    ├── src\
+    │   ├── main\
+    │   │   ├── java\com\example\ejercicios\
+    │   │   │   ├── Ejercicio.java                CREADO
+    │   │   │   ├── EjerciciosApplication.java    Sin cambios
+    │   │   │   └── EjerciciosController.java     MODIFICADO
+    │   │   └── resources\
+    │   │       └── application.properties        MODIFICADO
+    │   │
+    │   └── test\java\com\example\ejercicios\
+    │       └── EjerciciosApplicationTests.java   Sin cambios
+    │
+    ├── target\                       Generado al compilar (no editar)
+    │   ├── ejercicios-0.0.1-SNAPSHOT.jar
+    │   └── ...
+    │
+    └── .idea\                        Configuración de IntelliJ (no editar)
+
+Los archivos importantes del código son solamente estos tres:
+
+    1. Ejercicio.java               -> el modelo de datos
+    2. EjerciciosController.java    -> los endpoints (la API)
+    3. application.properties       -> nombre de la app y puerto
+
+
+================================================================================
+5. PASO A PASO DE LO REALIZADO (IGUAL QUE EL VIDEO)
+================================================================================
+
+PASO 1. CREAR EL PROYECTO BASE
+-------------------------------------------------------------------------------
+En el video se crea un proyecto con Spring Initializr.
+
+En tu caso el proyecto YA EXISTÍA (lo habías generado con Spring Initializr /
+IntelliJ) con esta configuración:
+
+    - Project: Maven
+    - Language: Java
+    - Spring Boot: 4.2.0
+    - Group: com.example
+    - Artifact: ejercicios
+    - Name: ejercicios
+    - Package name: com.example.ejercicios
+    - Packaging: Jar
+    - Java: 17
+    - Dependencia: Spring Web
+
+No fue necesario crearlo de nuevo.
+
+PASO 2. CREAR LA CLASE MODELO
+-------------------------------------------------------------------------------
+Se creó la clase Ejercicio.java en el paquete com.example.ejercicios.
+
+Es equivalente a la clase Medicamento del video:
+
+    - Tiene los datos del ejercicio en atributos privados.
+    - Tiene un constructor con todos los atributos.
+    - Tiene un getter y un setter por cada atributo.
+
+PASO 3. IMPLEMENTAR EL CONTROLADOR
+-------------------------------------------------------------------------------
+Se implementó la clase EjerciciosController.java (que ya existía vacía).
+
+Lleva la anotación @RestController y contiene:
+
+    - La lista fija de 10 ejercicios con List.of.
+    - El endpoint GET / con el método prueba().
+    - El endpoint GET /ejercicios con el método listaDeEjercicios().
+    - El endpoint GET /musculo con el método musculo(), que recibe el
+      parámetro "musculo" con @RequestParam y filtra con un for y contains,
+      exactamente igual que el endpoint /sintoma del video.
+
+PASO 4. CONFIGURAR EL PUERTO
+-------------------------------------------------------------------------------
+Se agregó server.port=3000 en application.properties, igual que en el video.
+
+PASO 5. EJECUTAR
+-------------------------------------------------------------------------------
+Se compiló el proyecto y se levantó la aplicación. El servidor Tomcat queda
+escuchando en http://localhost:3000.
+
+PASO 6. PROBAR LOS ENDPOINTS
+-------------------------------------------------------------------------------
+Se probaron los tres endpoints con peticiones reales y todos respondieron
+correctamente. Los resultados están en la sección 10 de este documento.
+
+
+================================================================================
+6. CÓDIGO COMPLETO DE LOS ARCHIVOS
+================================================================================
+
+--------------------------------------------------------------------------------
+ARCHIVO: src\main\java\com\example\ejercicios\Ejercicio.java
+--------------------------------------------------------------------------------
+
+package com.example.ejercicios;
+
+import java.util.List;
+
+public class Ejercicio {
+
+    private String nombre;
+    private List<String> musculos;
+    private List<String> equipo;
+    private String series;
+    private List<String> beneficios;
+    private List<String> precauciones;
+    private List<String> erroresComunes;
+    private List<String> recomendaciones;
+
+    public Ejercicio(String nombre, List<String> musculos, List<String> equipo, String series, List<String> beneficios, List<String> precauciones, List<String> erroresComunes, List<String> recomendaciones) {
+        this.nombre = nombre;
+        this.musculos = musculos;
+        this.equipo = equipo;
+        this.series = series;
+        this.beneficios = beneficios;
+        this.precauciones = precauciones;
+        this.erroresComunes = erroresComunes;
+        this.recomendaciones = recomendaciones;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public List<String> getMusculos() {
+        return musculos;
+    }
+
+    public void setMusculos(List<String> musculos) {
+        this.musculos = musculos;
+    }
+
+    public List<String> getEquipo() {
+        return equipo;
+    }
+
+    public void setEquipo(List<String> equipo) {
+        this.equipo = equipo;
+    }
+
+    public String getSeries() {
+        return series;
+    }
+
+    public void setSeries(String series) {
+        this.series = series;
+    }
+
+    public List<String> getBeneficios() {
+        return beneficios;
+    }
+
+    public void setBeneficios(List<String> beneficios) {
+        this.beneficios = beneficios;
+    }
+
+    public List<String> getPrecauciones() {
+        return precauciones;
+    }
+
+    public void setPrecauciones(List<String> precauciones) {
+        this.precauciones = precauciones;
+    }
+
+    public List<String> getErroresComunes() {
+        return erroresComunes;
+    }
+
+    public void setErroresComunes(List<String> erroresComunes) {
+        this.erroresComunes = erroresComunes;
+    }
+
+    public List<String> getRecomendaciones() {
+        return recomendaciones;
+    }
+
+    public void setRecomendaciones(List<String> recomendaciones) {
+        this.recomendaciones = recomendaciones;
+    }
+}
+
+--------------------------------------------------------------------------------
+ARCHIVO: src\main\java\com\example\ejercicios\EjerciciosController.java
+--------------------------------------------------------------------------------
+
+package com.example.ejercicios;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@RestController
+public class EjerciciosController {
+
+    private final List<Ejercicio> ejercicios = List.of(
+            new Ejercicio(
+                    "sentadilla",
+                    List.of("cuádriceps", "glúteos", "isquiotibiales"),
+                    List.of("barra", "peso corporal"),
+                    "3-4 series x 8-12 repeticiones",
+                    List.of("Fuerza de piernas", "Hipertrofia", "Mejora de la postura"),
+                    List.of("Lesión de rodilla", "Dolor lumbar"),
+                    List.of("Rodillas hacia dentro", "Levantar los talones"),
+                    List.of("Mantener el pecho arriba", "Bajar hasta que el muslo quede paralelo al suelo")
+            ),
+            new Ejercicio(
+                    "press de banca",
+                    List.of("pectoral mayor", "tríceps", "deltoides anterior"),
+                    List.of("barra", "banco plano"),
+                    "3-4 series x 6-10 repeticiones",
+                    List.of("Fuerza de empuje", "Hipertrofia de pecho"),
+                    List.of("Lesión de hombro", "Lesión de muñeca"),
+                    List.of("Arquear demasiado la espalda", "Rebotar la barra en el pecho"),
+                    List.of("Retraer las escápulas", "Usar un compañero o seguros")
+            ),
+            new Ejercicio(
+                    "peso muerto",
+                    List.of("isquiotibiales", "glúteos", "espalda baja"),
+                    List.of("barra", "discos"),
+                    "3-4 series x 5-8 repeticiones",
+                    List.of("Fuerza general", "Cadena posterior"),
+                    List.of("Hernia discal", "Dolor lumbar"),
+                    List.of("Redondear la espalda", "Alejar la barra del cuerpo"),
+                    List.of("Mantener la barra pegada a las piernas", "Empujar el suelo con los pies")
+            ),
+            new Ejercicio(
+                    "dominadas",
+                    List.of("dorsal ancho", "bíceps", "romboides"),
+                    List.of("barra de dominadas"),
+                    "3 series x 6-12 repeticiones",
+                    List.of("Fuerza de tracción", "Espalda fuerte"),
+                    List.of("Lesión de hombro", "Epicondilitis"),
+                    List.of("Balancearse para subir", "No completar el recorrido"),
+                    List.of("Usar banda elástica si es necesario", "Bajar de forma controlada")
+            ),
+            new Ejercicio(
+                    "zancadas",
+                    List.of("cuádriceps", "glúteos", "isquiotibiales"),
+                    List.of("mancuernas", "peso corporal"),
+                    "3 series x 10-12 repeticiones por pierna",
+                    List.of("Equilibrio", "Fuerza unilateral"),
+                    List.of("Lesión de rodilla", "Problemas de equilibrio"),
+                    List.of("Inclinar el torso hacia adelante", "Rodilla que pasa la punta del pie"),
+                    List.of("Dar un paso amplio", "Mantener el torso recto")
+            ),
+            new Ejercicio(
+                    "press militar",
+                    List.of("deltoides", "tríceps", "trapecio"),
+                    List.of("barra", "mancuernas"),
+                    "3-4 series x 8-12 repeticiones",
+                    List.of("Fuerza de hombros", "Estabilidad del core"),
+                    List.of("Lesión de hombro", "Cervicalgia"),
+                    List.of("Arquear la espalda", "Subir la barra por delante de la cara"),
+                    List.of("Activar el core", "No bloquear la respiración")
+            ),
+            new Ejercicio(
+                    "curl de bíceps",
+                    List.of("bíceps", "braquial"),
+                    List.of("mancuernas", "barra"),
+                    "3 series x 10-15 repeticiones",
+                    List.of("Hipertrofia de brazos", "Fuerza de agarre"),
+                    List.of("Epicondilitis", "Lesión de muñeca"),
+                    List.of("Balancear el torso", "Usar impulso"),
+                    List.of("Mantener los codos pegados al torso", "Bajar de forma controlada")
+            ),
+            new Ejercicio(
+                    "fondos en paralelas",
+                    List.of("tríceps", "pectoral mayor", "deltoides anterior"),
+                    List.of("paralelas"),
+                    "3 series x 8-12 repeticiones",
+                    List.of("Fuerza de empuje", "Hipertrofia de tríceps"),
+                    List.of("Lesión de hombro", "Lesión de codo"),
+                    List.of("Bajar demasiado", "Adelantar los hombros"),
+                    List.of("Mantener los codos cerca del cuerpo", "Bajar hasta 90 grados")
+            ),
+            new Ejercicio(
+                    "plancha abdominal",
+                    List.of("core", "recto abdominal", "oblicuos"),
+                    List.of("colchoneta"),
+                    "3 series x 30-60 segundos",
+                    List.of("Estabilidad del core", "Prevención de dolor lumbar"),
+                    List.of("Dolor lumbar", "Lesión de hombro"),
+                    List.of("Elevar la cadera", "Hundir la zona lumbar"),
+                    List.of("Alinear cabeza, cadera y talones", "Respirar de forma constante")
+            ),
+            new Ejercicio(
+                    "hip thrust",
+                    List.of("glúteos", "isquiotibiales"),
+                    List.of("barra", "banco"),
+                    "3-4 series x 10-15 repeticiones",
+                    List.of("Fuerza de glúteos", "Potencia de cadera"),
+                    List.of("Dolor lumbar", "Lesión de cadera"),
+                    List.of("Hiperextender la espalda", "Empujar con los talones"),
+                    List.of("Mantener el mentón al pecho", "Apretar los glúteos arriba")
+            )
+    );
+
+    @GetMapping("/")
+    public String prueba(){
+        return "Hola mundo";
+    }
+
+    @GetMapping("/ejercicios")
+    public List<Ejercicio> listaDeEjercicios(){
+        return ejercicios;
+    }
+
+    @GetMapping("/musculo")
+    public List<Ejercicio> musculo(@RequestParam String musculo){
+        List<Ejercicio> ejerciciosConMusculo = new ArrayList<>();
+        for(Ejercicio ejercicio:ejercicios){
+            if(ejercicio.getMusculos().contains(musculo)){
+                ejerciciosConMusculo.add(ejercicio);
+            }
+        }
+        return ejerciciosConMusculo;
+    }
+
+}
+
+--------------------------------------------------------------------------------
+ARCHIVO: src\main\resources\application.properties
+--------------------------------------------------------------------------------
+
+spring.application.name=ejercicios
+server.port=3000
+
+--------------------------------------------------------------------------------
+ARCHIVO: src\main\java\com\example\ejercicios\EjerciciosApplication.java
+(SIN CAMBIOS)
+--------------------------------------------------------------------------------
+
+package com.example.ejercicios;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class EjerciciosApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(EjerciciosApplication.class, args);
+	}
+
+}
+
+--------------------------------------------------------------------------------
+ARCHIVO: src\test\java\com\example\ejercicios\EjerciciosApplicationTests.java
+(SIN CAMBIOS)
+--------------------------------------------------------------------------------
+
+package com.example.ejercicios;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class EjerciciosApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}
+
+--------------------------------------------------------------------------------
+ARCHIVO: pom.xml (SIN CAMBIOS)
+--------------------------------------------------------------------------------
+
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>4.2.0</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.example</groupId>
+	<artifactId>ejercicios</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name/>
+	<description/>
+	<url/>
+	<licenses>
+		<license/>
+	</licenses>
+	<developers>
+		<developer/>
+	</developers>
+	<scm>
+		<connection/>
+		<developerConnection/>
+		<tag/>
+		<url/>
+	</scm>
+	<properties>
+		<java.version>17</java.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
+
+
+================================================================================
+7. DATOS DE LOS 10 EJERCICIOS
+================================================================================
+
+1) sentadilla
+   Músculos: cuádriceps, glúteos, isquiotibiales
+   Equipo: barra, peso corporal
+   Series: 3-4 series x 8-12 repeticiones
+   Beneficios: Fuerza de piernas, Hipertrofia, Mejora de la postura
+   Precauciones: Lesión de rodilla, Dolor lumbar
+   Errores comunes: Rodillas hacia dentro, Levantar los talones
+   Recomendaciones: Mantener el pecho arriba, Bajar hasta que el muslo quede
+   paralelo al suelo
+
+2) press de banca
+   Músculos: pectoral mayor, tríceps, deltoides anterior
+   Equipo: barra, banco plano
+   Series: 3-4 series x 6-10 repeticiones
+   Beneficios: Fuerza de empuje, Hipertrofia de pecho
+   Precauciones: Lesión de hombro, Lesión de muñeca
+   Errores comunes: Arquear demasiado la espalda, Rebotar la barra en el pecho
+   Recomendaciones: Retraer las escápulas, Usar un compañero o seguros
+
+3) peso muerto
+   Músculos: isquiotibiales, glúteos, espalda baja
+   Equipo: barra, discos
+   Series: 3-4 series x 5-8 repeticiones
+   Beneficios: Fuerza general, Cadena posterior
+   Precauciones: Hernia discal, Dolor lumbar
+   Errores comunes: Redondear la espalda, Alejar la barra del cuerpo
+   Recomendaciones: Mantener la barra pegada a las piernas, Empujar el suelo
+   con los pies
+
+4) dominadas
+   Músculos: dorsal ancho, bíceps, romboides
+   Equipo: barra de dominadas
+   Series: 3 series x 6-12 repeticiones
+   Beneficios: Fuerza de tracción, Espalda fuerte
+   Precauciones: Lesión de hombro, Epicondilitis
+   Errores comunes: Balancearse para subir, No completar el recorrido
+   Recomendaciones: Usar banda elástica si es necesario, Bajar de forma
+   controlada
+
+5) zancadas
+   Músculos: cuádriceps, glúteos, isquiotibiales
+   Equipo: mancuernas, peso corporal
+   Series: 3 series x 10-12 repeticiones por pierna
+   Beneficios: Equilibrio, Fuerza unilateral
+   Precauciones: Lesión de rodilla, Problemas de equilibrio
+   Errores comunes: Inclinar el torso hacia adelante, Rodilla que pasa la
+   punta del pie
+   Recomendaciones: Dar un paso amplio, Mantener el torso recto
+
+6) press militar
+   Músculos: deltoides, tríceps, trapecio
+   Equipo: barra, mancuernas
+   Series: 3-4 series x 8-12 repeticiones
+   Beneficios: Fuerza de hombros, Estabilidad del core
+   Precauciones: Lesión de hombro, Cervicalgia
+   Errores comunes: Arquear la espalda, Subir la barra por delante de la cara
+   Recomendaciones: Activar el core, No bloquear la respiración
+
+7) curl de bíceps
+   Músculos: bíceps, braquial
+   Equipo: mancuernas, barra
+   Series: 3 series x 10-15 repeticiones
+   Beneficios: Hipertrofia de brazos, Fuerza de agarre
+   Precauciones: Epicondilitis, Lesión de muñeca
+   Errores comunes: Balancear el torso, Usar impulso
+   Recomendaciones: Mantener los codos pegados al torso, Bajar de forma
+   controlada
+
+8) fondos en paralelas
+   Músculos: tríceps, pectoral mayor, deltoides anterior
+   Equipo: paralelas
+   Series: 3 series x 8-12 repeticiones
+   Beneficios: Fuerza de empuje, Hipertrofia de tríceps
+   Precauciones: Lesión de hombro, Lesión de codo
+   Errores comunes: Bajar demasiado, Adelantar los hombros
+   Recomendaciones: Mantener los codos cerca del cuerpo, Bajar hasta 90 grados
+
+9) plancha abdominal
+   Músculos: core, recto abdominal, oblicuos
+   Equipo: colchoneta
+   Series: 3 series x 30-60 segundos
+   Beneficios: Estabilidad del core, Prevención de dolor lumbar
+   Precauciones: Dolor lumbar, Lesión de hombro
+   Errores comunes: Elevar la cadera, Hundir la zona lumbar
+   Recomendaciones: Alinear cabeza, cadera y talones, Respirar de forma
+   constante
+
+10) hip thrust
+    Músculos: glúteos, isquiotibiales
+    Equipo: barra, banco
+    Series: 3-4 series x 10-15 repeticiones
+    Beneficios: Fuerza de glúteos, Potencia de cadera
+    Precauciones: Dolor lumbar, Lesión de cadera
+    Errores comunes: Hiperextender la espalda, Empujar con los talones
+    Recomendaciones: Mantener el mentón al pecho, Apretar los glúteos arriba
+
+
+================================================================================
+8. ENDPOINTS DE LA API (DETALLADOS)
+================================================================================
+
+La API tiene 3 endpoints. Todos son de tipo GET y devuelven JSON (excepto /,
+que devuelve texto plano).
+
+--------------------------------------------------------------------------------
+ENDPOINT 1: GET /
+--------------------------------------------------------------------------------
+
+URL:
+    http://localhost:3000/
+
+Parámetros:
+    Ninguno.
+
+Qué hace:
+    Devuelve el texto "Hola mundo". Sirve para comprobar que la aplicación
+    está levantada.
+
+Respuesta:
+    Código HTTP: 200 OK
+    Cuerpo: Hola mundo
+
+--------------------------------------------------------------------------------
+ENDPOINT 2: GET /ejercicios
+--------------------------------------------------------------------------------
+
+URL:
+    http://localhost:3000/ejercicios
+
+Parámetros:
+    Ninguno.
+
+Qué hace:
+    Devuelve la lista completa de los 10 ejercicios.
+
+Respuesta:
+    Código HTTP: 200 OK
+    Content-Type: application/json
+    Cuerpo: un arreglo JSON con 10 objetos.
+
+Ejemplo de un objeto de la respuesta (formateado para leerlo mejor; en la
+respuesta real va todo en una sola línea):
+
+    [
+      {
+        "nombre": "sentadilla",
+        "musculos": [
+          "cuádriceps",
+          "glúteos",
+          "isquiotibiales"
+        ],
+        "equipo": [
+          "barra",
+          "peso corporal"
+        ],
+        "series": "3-4 series x 8-12 repeticiones",
+        "beneficios": [
+          "Fuerza de piernas",
+          "Hipertrofia",
+          "Mejora de la postura"
+        ],
+        "precauciones": [
+          "Lesión de rodilla",
+          "Dolor lumbar"
+        ],
+        "erroresComunes": [
+          "Rodillas hacia dentro",
+          "Levantar los talones"
+        ],
+        "recomendaciones": [
+          "Mantener el pecho arriba",
+          "Bajar hasta que el muslo quede paralelo al suelo"
+        ]
+      },
+      ... (los otros 9 ejercicios con la misma estructura)
+    ]
+
+Los nombres de los 10 ejercicios, en orden, son:
+
+    1. sentadilla
+    2. press de banca
+    3. peso muerto
+    4. dominadas
+    5. zancadas
+    6. press militar
+    7. curl de bíceps
+    8. fondos en paralelas
+    9. plancha abdominal
+    10. hip thrust
+
+--------------------------------------------------------------------------------
+ENDPOINT 3: GET /musculo
+--------------------------------------------------------------------------------
+
+URL:
+    http://localhost:3000/musculo?musculo=VALOR
+
+Parámetro obligatorio (query string):
+    musculo = nombre del músculo que se quiere buscar.
+
+Qué hace:
+    Recorre la lista de ejercicios y devuelve solamente aquellos cuya lista
+    de "musculos" contiene exactamente el valor recibido.
+
+    La comparación se hace con List.contains(), por lo tanto:
+        - Distingue mayúsculas y minúsculas.
+        - Distingue acentos.
+        - No hace búsquedas parciales.
+        - El valor debe ser idéntico a uno de los elementos de la lista.
+
+Respuesta:
+    Código HTTP: 200 OK
+    Content-Type: application/json
+    Cuerpo: arreglo JSON (puede tener 0, 1 o varios ejercicios).
+
+Ejemplos reales probados:
+
+    GET http://localhost:3000/musculo?musculo=gl%C3%BAteos
+    (equivale a: musculo=glúteos)
+
+    Devuelve 4 ejercicios:
+        - sentadilla
+        - peso muerto
+        - zancadas
+        - hip thrust
+
+    GET http://localhost:3000/musculo?musculo=tr%C3%ADceps
+    (equivale a: musculo=tríceps)
+
+    Devuelve 3 ejercicios:
+        - press de banca
+        - press militar
+        - fondos en paralelas
+
+    GET http://localhost:3000/musculo?musculo=piernas
+
+    Devuelve un arreglo vacío: []
+    (porque "piernas" no es un valor exacto de la lista; los valores son los
+    nombres de los músculos, no los grupos como "piernas").
+
+Si se omite el parámetro:
+
+    GET http://localhost:3000/musculo
+
+    Código HTTP: 400 Bad Request
+    Content-Type: application/json
+    Cuerpo:
+    {"timestamp":"...","status":400,"error":"Bad Request","path":"/musculo"}
+
+    Esto lo hace Spring automáticamente porque @RequestParam es obligatorio.
+
+Si el valor no coincide con nada:
+
+    Código HTTP: 200 OK
+    Cuerpo: []
+
+
+================================================================================
+9. COMPORTAMIENTO DEL FILTRO POR MÚSCULO
+================================================================================
+
+El filtro está implementado así en el controlador:
+
+    @GetMapping("/musculo")
+    public List<Ejercicio> musculo(@RequestParam String musculo){
+        List<Ejercicio> ejerciciosConMusculo = new ArrayList<>();
+        for(Ejercicio ejercicio:ejercicios){
+            if(ejercicio.getMusculos().contains(musculo)){
+                ejerciciosConMusculo.add(ejercicio);
+            }
+        }
+        return ejerciciosConMusculo;
+    }
+
+Es el mismo patrón del video (allí se filtraba por síntoma y se usaba
+contains sobre las indicaciones).
+
+VALORES VÁLIDOS PARA EL PARÁMETRO "musculo"
+(tal como están escritos en el código, en minúscula y con acentos):
+
+    cuádriceps
+    glúteos
+    isquiotibiales
+    pectoral mayor
+    tríceps
+    deltoides anterior
+    espalda baja
+    dorsal ancho
+    bíceps
+    romboides
+    deltoides
+    trapecio
+    braquial
+    core
+    recto abdominal
+    oblicuos
+
+CÓDIGOS URL DE LOS ACENTOS
+
+Si escribes la URL a mano, los acentos deben ir codificados. El navegador y
+Postman lo hacen automáticamente; en la barra del navegador puedes escribir
+la palabra con acento y el navegador la codifica.
+
+    á  ->  %C3%A1
+    é  ->  %C3%A9
+    í  ->  %C3%AD
+    ó  ->  %C3%B3
+    ú  ->  %C3%BA
+
+Ejemplos:
+
+    glúteos  ->  gl%C3%BAteos
+    tríceps  ->  tr%C3%ADceps
+    bíceps   ->  b%C3%ADceps
+    cuádriceps -> cu%C3%A1driceps
+
+EJEMPLO DE LO QUE DEVUELVE CADA VALOR (referencia)
+
+    glúteos           -> sentadilla, peso muerto, zancadas, hip thrust
+    cuádriceps        -> sentadilla, zancadas
+    isquiotibiales    -> sentadilla, peso muerto, zancadas, hip thrust
+    pectoral mayor    -> press de banca, fondos en paralelas
+    tríceps           -> press de banca, press militar, fondos en paralelas
+    deltoides anterior-> press de banca, fondos en paralelas
+    deltoides         -> press militar
+    bíceps            -> dominadas, curl de bíceps
+    dorsal ancho      -> dominadas
+    romboides         -> dominadas
+    trapecio          -> press militar
+    braquial          -> curl de bíceps
+    core              -> plancha abdominal
+    recto abdominal   -> plancha abdominal
+    oblicuos          -> plancha abdominal
+    espalda baja      -> peso muerto
+
+NOTA:
+    Como la comparación es exacta, "Glúteos" con mayúscula devuelve [] y
+    "gluteos" sin acento también devuelve []. Usa los valores de la lista.
+
+
+================================================================================
+10. PRUEBAS REALIZADAS Y RESULTADOS
+================================================================================
+
+PRUEBA 1. COMPILACIÓN DEL PROYECTO
+-------------------------------------------------------------------------------
+Comando usado:
+
+    mvnw.cmd -B -DskipTests package
+
+Resultado:
+
+    BUILD SUCCESS
+    Se generó el archivo:
+    target\ejercicios-0.0.1-SNAPSHOT.jar
+
+PRUEBA 2. PRUEBAS AUTOMÁTICAS
+-------------------------------------------------------------------------------
+Comando usado:
+
+    mvnw.cmd -B test
+
+Resultado:
+
+    Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+    BUILD SUCCESS
+
+La única prueba existente es EjerciciosApplicationTests.contextLoads(), que
+verifica que el contexto de Spring arranque correctamente.
+
+Nota: durante la prueba aparece un aviso de Mockito relacionado con el JDK 25.
+Es solo una advertencia, no un error; la prueba pasa y el build termina bien.
+
+PRUEBA 3. ENDPOINTS CON LA APLICACIÓN LEVANTADA
+-------------------------------------------------------------------------------
+La aplicación se levantó y se hicieron peticiones reales:
+
+    Petición                                      Resultado
+    --------------------------------------------  ----------------------------
+    GET /                                         "Hola mundo"
+    GET /ejercicios                               10 ejercicios
+    GET /ejercicios (encabezados)                 200, application/json
+    GET /musculo?musculo=glúteos                  4 ejercicios
+    GET /musculo?musculo=tríceps                  3 ejercicios
+    GET /musculo?musculo=piernas                  [] (sin coincidencias)
+    GET /musculo (sin parámetro)                  400 Bad Request
+
+Detalle del filtro por glúteos:
+
+    sentadilla
+    peso muerto
+    zancadas
+    hip thrust
+
+Detalle del filtro por tríceps:
+
+    press de banca
+    press militar
+    fondos en paralelas
+
+PRUEBA 4. CODIFICACIÓN DE CARACTERES
+-------------------------------------------------------------------------------
+Se verificó que el JSON se devuelve en UTF-8 y que los acentos y la letra ñ
+se ven correctamente:
+
+    "cuádriceps", "glúteos", "Lesión de rodilla", "curl de bíceps"
+
+También se comprobó que el parámetro con acentos codificado en la URL
+(gl%C3%BAteos) se interpreta correctamente y encuentra los ejercicios.
+
+CONCLUSIÓN:
+    El proyecto compila, las pruebas pasan y los tres endpoints funcionan.
+
+
+================================================================================
+11. CÓMO EJECUTAR EL PROYECTO
+================================================================================
+
+OPCIÓN A. DESDE INTELLIJ IDEA (la más fácil)
+-------------------------------------------------------------------------------
+1. Abrir IntelliJ IDEA.
+2. File > Open y seleccionar la carpeta:
+       C:\Users\Sebastian\Desktop\api_java\ejercicios
+3. Esperar a que IntelliJ importe el proyecto Maven y descargue dependencias.
+4. Abrir el archivo:
+       src\main\java\com\example\ejercicios\EjerciciosApplication.java
+5. Hacer clic en el triángulo verde (Run) al lado del método main, o clic
+   derecho > Run 'EjerciciosApplication'.
+6. En la consola debe aparecer algo similar a:
+       Tomcat started on port 3000
+       Started EjerciciosApplication in ... seconds
+7. Abrir el navegador en http://localhost:3000/
+
+Para detenerla: botón cuadrado rojo (Stop) en IntelliJ.
+
+OPCIÓN B. DESDE LA TERMINAL (Windows)
+-------------------------------------------------------------------------------
+Abrir PowerShell y ejecutar:
+
+    cd C:\Users\Sebastian\Desktop\api_java\ejercicios
+    .\mvnw.cmd spring-boot:run
+
+Para detenerla: Ctrl + C.
+
+OPCIÓN C. GENERAR EL JAR Y EJECUTARLO
+-------------------------------------------------------------------------------
+    cd C:\Users\Sebastian\Desktop\api_java\ejercicios
+    .\mvnw.cmd -DskipTests package
+    java -jar target\ejercicios-0.0.1-SNAPSHOT.jar
+
+Para detenerla: Ctrl + C.
+
+IMPORTANTE SOBRE JAVA EN ESTA COMPUTADORA
+-------------------------------------------------------------------------------
+En esta computadora el comando "java" y el comando "mvn" NO están agregados al
+PATH del sistema. Por eso, al ejecutar en una terminal normal puede aparecer:
+
+    El término 'java' no se reconoce...
+
+Soluciones:
+
+    1. Usar IntelliJ IDEA (Opción A), que ya tiene configurado su propio JDK
+       (JetBrains Runtime 25).
+
+    2. O definir JAVA_HOME antes de ejecutar, por ejemplo en PowerShell:
+
+       $env:JAVA_HOME='C:\Program Files\JetBrains\IntelliJ IDEA 2026.3\jbr'
+       .\mvnw.cmd spring-boot:run
+
+    3. O instalar un JDK 17 o superior y agregarlo al PATH.
+
+CONFIGURACIÓN ACTUAL DEL PUERTO
+-------------------------------------------------------------------------------
+El puerto está en application.properties:
+
+    server.port=3000
+
+Si el puerto 3000 está ocupado, se puede cambiar por otro, por ejemplo:
+
+    server.port=8080
+
+y luego entrar a http://localhost:8080/
+
+
+================================================================================
+12. CÓMO PROBAR LA API (NAVEGADOR, POSTMAN, CURL)
+================================================================================
+
+OPCIÓN 1. NAVEGADOR (GET)
+-------------------------------------------------------------------------------
+Con la aplicación corriendo, abrir cualquiera de estas URLs:
+
+    http://localhost:3000/
+    http://localhost:3000/ejercicios
+    http://localhost:3000/musculo?musculo=glúteos
+    http://localhost:3000/musculo?musculo=tríceps
+    http://localhost:3000/musculo?musculo=cuádriceps
+
+El navegador muestra el JSON. Si tiene una extensión para formatear JSON, se
+verá más ordenado.
+
+OPCIÓN 2. POSTMAN
+-------------------------------------------------------------------------------
+1. Abrir Postman.
+2. Crear una petición nueva.
+3. Método: GET.
+4. URL: http://localhost:3000/ejercicios
+5. Clic en Send.
+6. Abajo se ve el JSON de respuesta y el código 200 OK.
+
+Para el filtro:
+
+    GET http://localhost:3000/musculo?musculo=glúteos
+
+En Postman puedes escribir el acento directamente en el campo "Query Params"
+y Postman lo codifica solo.
+
+OPCIÓN 3. CURL (WINDOWS)
+-------------------------------------------------------------------------------
+En PowerShell:
+
+    curl.exe http://localhost:3000/
+    curl.exe http://localhost:3000/ejercicios
+    curl.exe "http://localhost:3000/musculo?musculo=gl%C3%BAteos"
+    curl.exe "http://localhost:3000/musculo?musculo=tr%C3%ADceps"
+
+Nota: en PowerShell, "curl" puede ser un alias de Invoke-WebRequest. Para usar
+el curl real, escribe "curl.exe". También puedes usar:
+
+    Invoke-RestMethod http://localhost:3000/ejercicios
+
+Para ver los encabezados HTTP:
+
+    curl.exe -i http://localhost:3000/ejercicios
+
+QUÉ SIGNIFICAN LOS CÓDIGOS HTTP
+-------------------------------------------------------------------------------
+    200 OK           -> la petición se hizo correctamente.
+    400 Bad Request  -> falta el parámetro obligatorio "musculo".
+    404 Not Found    -> la ruta está mal escrita.
+    500              -> error interno (revisar la consola).
+
+
+================================================================================
+13. QUÉ NO SE AGREGÓ (A PROPÓSITO)
+================================================================================
+
+Para mantener el proyecto igual al video, NO se agregó:
+
+    - Base de datos (MySQL, PostgreSQL, H2, etc.)
+    - Spring Data JPA
+    - Repositorios
+    - Capa de servicios
+    - DTOs
+    - Validaciones con Bean Validation
+    - Manejo personalizado de errores
+    - Seguridad (Spring Security / login / tokens)
+    - Swagger / OpenAPI
+    - Paginación
+    - Endpoints POST, PUT, DELETE
+    - Frontend (HTML, JavaScript, React, etc.)
+    - Docker
+
+El proyecto es intencionalmente sencillo: un modelo, un controlador con datos
+en memoria y tres endpoints GET, igual que el ejemplo del video.
+
+
+================================================================================
+14. SOLUCIÓN DE PROBLEMAS FRECUENTES
+================================================================================
+
+PROBLEMA: "Port 3000 was already in use" / el puerto está ocupado.
+-------------------------------------------------------------------------------
+Significa que ya hay otra aplicación usando el puerto 3000 (puede ser una
+ejecución anterior que quedó abierta).
+
+Solución:
+    1. Detener la ejecución anterior en IntelliJ (botón rojo) o cerrar la
+       terminal donde estaba corriendo.
+    2. O cambiar el puerto en application.properties:
+
+           server.port=8080
+
+    3. En Windows se puede ver qué proceso usa el puerto con:
+
+           netstat -ano | findstr :3000
+
+PROBLEMA: No responde http://localhost:3000
+-------------------------------------------------------------------------------
+Revisar:
+    - Que la aplicación siga corriendo (la terminal o IntelliJ deben seguir
+      abiertos; si se cierra, el servidor se apaga).
+    - Que en la consola aparezca "Tomcat started on port 3000".
+    - Que la URL esté bien escrita.
+    - Que no haya otro programa usando el puerto.
+
+PROBLEMA: El filtro devuelve [] (arreglo vacío)
+-------------------------------------------------------------------------------
+El valor no coincide exactamente. Revisar:
+    - Mayúsculas y minúsculas: debe ser "glúteos", no "Glúteos".
+    - Acentos: "glúteos" lleva tilde; "gluteos" no coincide.
+    - Que sea un músculo de la lista de la sección 9.
+    - Que no se esté buscando un grupo como "piernas", porque ese valor no
+      existe en los datos.
+
+PROBLEMA: "MissingServletRequestParameterException" o error 400 en /musculo
+-------------------------------------------------------------------------------
+Falta el parámetro. La URL debe incluir ?musculo=VALOR. Ejemplo:
+
+    http://localhost:3000/musculo?musculo=bíceps
+
+PROBLEMA: "java no se reconoce como nombre de un comando"
+-------------------------------------------------------------------------------
+Java no está en el PATH. Usar IntelliJ o definir JAVA_HOME (ver sección 11).
+
+PROBLEMA: Los cambios no se reflejan
+-------------------------------------------------------------------------------
+Detener la aplicación y volver a ejecutarla. El proyecto no usa devtools, así
+que no recarga automáticamente.
+
+PROBLEMA: Caracteres raros en la consola (Ã¡, Ã³)
+-------------------------------------------------------------------------------
+Es solo la forma en que algunas consolas de Windows muestran el texto. El JSON
+real se devuelve en UTF-8 y el navegador/Postman lo muestran correctamente.
+Se verificó que la respuesta contiene "cuádriceps" y "glúteos" bien escritos.
+
+
+================================================================================
+15. COMPARACIÓN CON EL PROYECTO DEL VIDEO
+================================================================================
+
+VIDEO (medicamentos)                    PROYECTO ACTUAL (ejercicios)
+--------------------------------------  --------------------------------------
+Clase Medicamento                       Clase Ejercicio
+@RestController                         @RestController
+List<Medicamento> con List.of           List<Ejercicio> con List.of
+10 medicamentos                         10 ejercicios
+GET / -> "Hola mundo"                   GET / -> "Hola mundo"
+GET /medicamentos                       GET /ejercicios
+GET /sintoma?sintoma=...                GET /musculo?musculo=...
+Filtro con for + contains sobre         Filtro con for + contains sobre
+  las indicaciones                        los músculos
+server.port=3000                        server.port=3000
+Spring Boot 3.5.3                       Spring Boot 4.2.0 (el que ya tenía
+                                          tu proyecto)
+Java 17                                 Java 17
+Maven + Spring Web                      Maven + Spring Web
+
+CAMPOS:
+
+    Medicamento                    Ejercicio
+    -----------------------------  -----------------------------
+    nombre (String)                nombre (String)
+    comercial (List<String>)       musculos (List<String>)
+    via (List<String>)             equipo (List<String>)
+    dosis (String)                 series (String)
+    indicaciones (List<String>)    beneficios (List<String>)
+    contraindicaciones (List)      precauciones (List<String>)
+    efectosAdversos (List)         erroresComunes (List<String>)
+    cuidadosEnfermeria (List)      recomendaciones (List<String>)
+
+La estructura, los tipos de datos y la lógica de los endpoints son los mismos.
+Solo cambia el tema y los nombres de los campos.
+
+
+================================================================================
+16. LISTA DE VERIFICACIÓN FINAL
+================================================================================
+
+[X] Proyecto Spring Boot con Maven y Java 17.
+[X] Dependencia Spring Web agregada (ya estaba en el pom).
+[X] Clase modelo Ejercicio con atributos, constructor, getters y setters.
+[X] Controlador con @RestController.
+[X] Lista fija de 10 ejercicios con List.of.
+[X] Endpoint GET / que responde "Hola mundo".
+[X] Endpoint GET /ejercicios que devuelve todos los ejercicios.
+[X] Endpoint GET /musculo?musculo=... que filtra por músculo.
+[X] Puerto 3000 configurado en application.properties.
+[X] Proyecto compilado correctamente (BUILD SUCCESS).
+[X] Prueba automática ejecutada sin errores (1 test, 0 fallos).
+[X] Los 3 endpoints probados con peticiones reales.
+[X] Codificación UTF-8 verificada (acentos y ñ correctos).
+[X] Documentación y README incluidos.
+[X] Nada de base de datos ni funcionalidades extra.
+
+FIN DEL DOCUMENTO
+
+================================================================================
